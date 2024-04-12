@@ -1,0 +1,54 @@
+
+version: '3.3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: myapp/php
+    container_name: app
+    volumes:
+      - ./public/:/data/application.local/public
+      - ./app/:/data/application.local/app
+      - ./routes/:/data/application.local/routes
+      - ./resources/:/data/application.local/resources
+    networks:
+      - app-network
+    depends_on:
+        - postgres
+
+  webserver:
+    build:
+      context: Docker/nginx
+      dockerfile: Dockerfile
+    image: myapp/nginx
+    container_name: web
+    ports:
+      - "8000:80"
+    volumes:
+       - ./public/:/data/application.local/public
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+  postgres:
+     image: postgres:latest
+     container_name: postgres
+     environment:
+         POSTGRES_DB: laravel
+         POSTGRES_USER: root
+         POSTGRES_PASSWORD: root
+     ports:
+         - "5432:5432"
+     networks:
+         - app-network
+     volumes:
+         - postgres_data:/var/lib/postgresql/data
+
+volumes:
+    postgres_data:
+networks:
+  app-network:
+    driver: bridge

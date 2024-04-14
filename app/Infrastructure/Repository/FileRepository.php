@@ -3,16 +3,15 @@
 namespace App\Infrastructure\Repository;
 
 use App\Domain\Repository\FileRepositoryInterface;
-use App\Domain\ValueObject\File;
 use Illuminate\Support\Facades\Storage;
 
 class FileRepository implements FileRepositoryInterface
 {
 
-    public function save(File $file): string
+    public function save(string $filename, string $content): string
     {
-        Storage::disk('local')->put($file->getFilename(), $file->getContent());
+        Storage::disk('local')->put($filename, $content);
 
-        return Storage::disk('local')->url($file->getFilename());
+        return Storage::disk('local')->url($filename);
     }
 }

@@ -2,15 +2,12 @@
 
 namespace App\Application\UseCase;
 
-use App\Application\Factory\ReportFactory;
+use App\Application\Actions\ReportCreator;
 use App\Application\UseCase\Request\CreateReportRequest;
+use App\Application\UseCase\Request\PresenterCreateReportRequest;
 use App\Application\UseCase\Response\CreateReportResponse;
-use App\Domain\Entity\NewsCollection;
-use App\Domain\Entity\NewsPage;
 use App\Domain\Repository\FileRepositoryInterface;
 use App\Domain\Repository\NewsRepositoryInterface;
-use App\Domain\ValueObject\Title;
-use App\Domain\ValueObject\URL;
 
 class CreateReportUseCase
 {
@@ -25,14 +22,15 @@ class CreateReportUseCase
 
     public function __invoke(CreateReportRequest $request): CreateReportResponse
     {
-        $news_collection = new NewsCollection();
-        foreach ($request->ids as $id) {
-            $news_info = $this->repository->getById($id);
-            $news_collection->addNews(new NewsPage($news_info['date'], new Title($news_info['title']), new URL($news_info['url'])));
-        }
-        $report = ReportFactory::create($news_collection);
+        $news = [];
 
-        $link = $this->fileRepository->save($report->getValue());
+        foreach ($request->ids as $id) {
+            $news[] = $this->repository->getByID($id);
+        }
+
+        $report = ReportCreator::createReport(new PresenterCreateReportRequest($news)) ;
+
+        $link = $this->fileRepository->save($report->reportName, $report->reportContent);
 
         return new CreateReportResponse($link);
 

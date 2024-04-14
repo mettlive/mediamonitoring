@@ -1,10 +1,7 @@
 <?php
-namespace App\Presenter\Http\Controllers;
+namespace App\Infrastructure\Http\Controllers;
 use App\Application\UseCase\CreateNewsPageUseCase;
 use App\Application\UseCase\Request\CreateNewsPageRequest;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class CreateNewsPageController

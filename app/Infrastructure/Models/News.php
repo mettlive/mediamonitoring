@@ -12,4 +12,5 @@ class News extends Model
     protected $table = 'news';
     protected $fillable = ['url', 'title', 'date'];
     public $timestamps = true;
+
 }

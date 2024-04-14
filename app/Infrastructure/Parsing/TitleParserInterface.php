@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Parser;
+namespace App\Infrastructure\Parsing;
 
 interface TitleParserInterface
 {

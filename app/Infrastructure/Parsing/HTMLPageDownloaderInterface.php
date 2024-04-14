@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Downloader;
+namespace App\Infrastructure\Parsing;
 
 interface HTMLPageDownloaderInterface
 {

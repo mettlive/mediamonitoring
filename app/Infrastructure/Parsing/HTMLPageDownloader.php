@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Parsing;
 
-use App\Domain\Downloader\HTMLPageDownloaderInterface;
 use Illuminate\Http\Client\ConnectionException;
 
 class HTMLPageDownloader implements HTMLPageDownloaderInterface

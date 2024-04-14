@@ -4,6 +4,8 @@ namespace App\Infrastructure\Repository;
 
 use App\Domain\Entity\NewsPage;
 use App\Domain\Repository\NewsRepositoryInterface;
+use App\Domain\ValueObject\Title;
+use App\Domain\ValueObject\URL;
 use App\Infrastructure\Models\News;
 
 class NewsRepository implements NewsRepositoryInterface
@@ -16,24 +18,29 @@ class NewsRepository implements NewsRepositoryInterface
     {
     }
 
-    public function save(NewsPage $newsPage)
+    public function save(NewsPage $newsPage): NewsPage
     {
-        $news = $this->newsModel->create([
+        $id = $this->newsModel->create([
             'url' => $newsPage->getURL()->getValue(),
             'title' => $newsPage->getTitle()->getValue(),
             'date' => $newsPage->getDate() //
         ]);
-
-        return $news->id;
+        $newsPage->setId($id);
+        return $newsPage;
     }
 
     public function getAll(): array
     {
-        return $this->newsModel->all()->toArray();
+        $news = [];
+        foreach ($this->newsModel->all() as $newsPage) {
+            $news[] = new NewsPage($newsPage['date'], new Title($newsPage['title']), new URL($newsPage['url']));
+        }
+        return $news;
     }
 
-    public function getById(int $id)
+    public function getByID(int $id): NewsPage
     {
-        return $this->newsModel->findOrFail($id);
+        $newsPage = $this->newsModel->findOrFail($id);
+        return new NewsPage($newsPage['date'], new Title($newsPage['title']), new URL($newsPage['url']));
     }
 }

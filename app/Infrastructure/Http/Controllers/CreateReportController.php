@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Presenter\Http\Controllers;
+namespace App\Infrastructure\Http\Controllers;
 
 use App\Application\UseCase\CreateReportUseCase;
 use App\Application\UseCase\Request\CreateReportRequest;

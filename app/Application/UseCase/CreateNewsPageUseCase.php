@@ -2,17 +2,20 @@
 
 namespace App\Application\UseCase;
 
-use App\Application\Factory\NewsPageFactory;
 use App\Application\UseCase\Request\CreateNewsPageRequest;
 use App\Application\UseCase\Response\CreateNewsPageResponse;
-use App\Domain\Downloader\HTMLPageDownloaderInterface;
-use App\Domain\Parser\TitleParserInterface;
+use App\Domain\Entity\NewsPage;
 use App\Domain\Repository\NewsRepositoryInterface;
+use App\Domain\ValueObject\Title;
+use App\Domain\ValueObject\URL;
+use App\Infrastructure\Parsing\HTMLPageDownloaderInterface;
+use App\Infrastructure\Parsing\TitleParserInterface;
 
 class CreateNewsPageUseCase
 {
     private NewsRepositoryInterface $repository;
-    private NewsPageFactory $newsPageFactory;
+    private TitleParserInterface $parser;
+    private HTMLPageDownloaderInterface $downloader;
     public function __construct(
         NewsRepositoryInterface $repository,
         HTMLPageDownloaderInterface $downloader,
@@ -20,15 +23,22 @@ class CreateNewsPageUseCase
     )
     {
         $this->repository = $repository;
-        $this->newsPageFactory = new NewsPageFactory($downloader, $parser);
+        $this->$parser = $parser;
+        $this->downloader = $downloader;
     }
 
     public function __invoke(CreateNewsPageRequest $request): CreateNewsPageResponse
     {
-        $newsPage = $this->newsPageFactory->create($request->url);
-        $id = $this->repository->save($newsPage);
+        $url = new URL($request->url);
+        $html = $this->downloader->download($url->getValue());
+        $title = new Title($this->parser->parseFromHtml($html));
+        $currentTime = date('Y-m-d H:i:s');
 
-        return new CreateNewsPageResponse($id);
+        $newsPage = new NewsPage($currentTime, $title, $url);
+
+        $this->repository->save($newsPage);
+
+        return new CreateNewsPageResponse($newsPage->getId());
     }
 
 }

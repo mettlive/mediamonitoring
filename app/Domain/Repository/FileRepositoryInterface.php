@@ -2,9 +2,7 @@
 
 namespace App\Domain\Repository;
 
-use App\Domain\ValueObject\File;
-
 interface FileRepositoryInterface
 {
-    public function save(File $file);
+    public function save(string $filename, string $content): string;
 }

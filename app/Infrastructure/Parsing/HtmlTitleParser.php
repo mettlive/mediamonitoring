@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Parsing;
 
-use App\Domain\Parser\TitleParserInterface;
 use Symfony\Component\DomCrawler\Crawler;
 
 class HtmlTitleParser implements TitleParserInterface

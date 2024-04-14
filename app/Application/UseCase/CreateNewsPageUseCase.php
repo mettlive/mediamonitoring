@@ -23,7 +23,7 @@ class CreateNewsPageUseCase
     )
     {
         $this->repository = $repository;
-        $this->$parser = $parser;
+        $this->parser = $parser;
         $this->downloader = $downloader;
     }
 

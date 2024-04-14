@@ -19,7 +19,16 @@ class GetAllNewsPageUseCase
     public function __invoke()
     {
         $newsPages = $this->repository->getAll();
-        return new GetAllNewsPageResponse($newsPages);
+        $response = [];
+        foreach ($newsPages as $newsPage) {
+            $response[] = [
+                'id' => $newsPage->getId(),
+                'date' => $newsPage->getDate(),
+                'title' => $newsPage->getTitle()->getValue(),
+                'url' => $newsPage->getURL()->getValue()
+            ];
+        }
+        return new GetAllNewsPageResponse($response);
     }
 
 

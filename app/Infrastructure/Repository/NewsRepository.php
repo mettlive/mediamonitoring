@@ -25,15 +25,16 @@ class NewsRepository implements NewsRepositoryInterface
             'title' => $newsPage->getTitle()->getValue(),
             'date' => $newsPage->getDate() //
         ]);
-        $newsPage->setId($id);
+        $newsPage->setId($id->getKey());
         return $newsPage;
     }
 
     public function getAll(): array
     {
         $news = [];
-        foreach ($this->newsModel->all() as $newsPage) {
-            $news[] = new NewsPage($newsPage['date'], new Title($newsPage['title']), new URL($newsPage['url']));
+        foreach ($this->newsModel->all() as $key=>$newsPage) {
+            $news[$key] = new NewsPage($newsPage['date'], new Title($newsPage['title']), new URL($newsPage['url']));
+            $news[$key]->setId($newsPage->getKey());
         }
         return $news;
     }

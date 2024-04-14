@@ -15,7 +15,7 @@ class ReportCreator implements PresenterInterface
         foreach ($request->news as $newsPage) {
             $url = $newsPage->getURL()->getValue();
             $title = $newsPage->getTitle()->getValue();
-            $html .= "<li><a href=$url>$title</a>";
+            $html .= "<li><a href=$url>$title</a></li>";
         }
         $html .= "</ul>";
         $currentTime = date('Y-m-d H:i:s');
